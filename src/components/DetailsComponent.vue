@@ -1,6 +1,9 @@
 <template>
-  <div v-if="$store.state.allUserDetails.length > 0">
-    <table>
+  <div class="parent" v-if="$store.state.allUserDetails.length > 0">
+    <div class="noRows" v-if="showNoRows">
+      No items for your selected search
+    </div>
+    <table v-else>
       <thead>
         <tr>
           <th v-for="user in Object.keys(userDetails[0])" :key="user[0]">
@@ -22,14 +25,13 @@
 <script>
 export default {
   name: "DetailsComponent",
-  data: function () {
-    return {
-      items: [{ message: "Foo" }, { message: "Bar" }],
-    };
-  },
   computed: {
     userDetails() {
-      return this.$store.state.allUserDetails;
+      return this.$store.getters.userDetails;
+    },
+    showNoRows() {
+      const { getSearchText, getFilteredUsers } = this.$store.getters;
+      return getSearchText.length > 0 && getFilteredUsers.length < 1;
     },
   },
   props: {},
@@ -62,7 +64,7 @@ tr:hover {
   filter: blur(3px);
 }
 
-div {
+.parent {
   overflow-y: scroll;
   overflow-x: scroll;
   width: 100%;

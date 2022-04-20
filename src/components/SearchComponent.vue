@@ -1,13 +1,23 @@
 <template>
   <div>
-    <input type="text" name="personSearch" placeholder="Type To Search" />
-    <button>Submit</button>
+    <input
+      type="text"
+      name="personSearch"
+      placeholder="Search by name"
+      v-model="this.$store.state.searchText"
+      v-on:keyup="search"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: "SearchComponent",
+  methods: {
+    search() {
+      this.$store.commit("setSearch", this.$store.state.searchText);
+    },
+  },
   props: {},
 };
 </script>
@@ -26,5 +36,7 @@ input {
   background: transparent;
   font-size: 2em;
   color: white;
+  border: 1px solid white;
+  border-radius: 8px;
 }
 </style>

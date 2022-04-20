@@ -4,24 +4,44 @@ import data from "../../data/sampleData.json";
 import dayjs from "dayjs";
 export interface State {
   allUserDetails: UserDetails[];
+  filteredUsers: UserDetails[];
+  searchText: string;
 }
 
 export default createStore<State>({
   state: {
     allUserDetails: [],
+    filteredUsers: [],
+    searchText: "",
   },
   getters: {
-    getUserData(state) {
+    userDetails(state: State): UserDetails[] | string {
+      if (state.filteredUsers.length > 0) {
+        return state.filteredUsers;
+      }
       return state.allUserDetails;
+    },
+    getSearchText(state: State): string {
+      return state.searchText;
+    },
+    getFilteredUsers(state: State): UserDetails[] {
+      return state.filteredUsers;
     },
   },
   mutations: {
-    setUserDetails(state, detailsArray: UserDetails[]) {
+    setUserDetails(state: State, detailsArray: UserDetails[]): void {
       state.allUserDetails = detailsArray;
+    },
+    setSearch(state: State, searchText: string): void {
+      const filtered: UserDetails[] = state.allUserDetails.filter((item) =>
+        item.name.toLowerCase().includes(searchText)
+      );
+      state.filteredUsers = filtered;
+      state.searchText = searchText;
     },
   },
   actions: {
-    async setUserDetails({ commit }) {
+    async setUserDetails({ commit }): Promise<void> {
       const fields = [
         "name",
         "height",
