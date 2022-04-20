@@ -1,6 +1,6 @@
 <template>
   <PopupComponent v-if="!true" />
-  <div id="mainContent">
+  <div @click="$store.getUserData" id="mainContent">
     <SearchComponent />
     <DetailsComponent />
   </div>
@@ -15,6 +15,10 @@ import PopupComponent from "./components/PopupComponent.vue";
 export default defineComponent({
   name: "App",
   components: { DetailsComponent, SearchComponent, PopupComponent },
+  mounted() {
+    const { dispatch } = this.$store;
+    dispatch("setUserDetails");
+  },
 });
 </script>
 
