@@ -22,7 +22,7 @@
           @click="setModalDetails(user)"
         >
           <td v-for="(userDetail, key) in user" :key="userDetail">
-            <div v-if="key === 'homeworld'">Click for more...</div>
+            <div v-if="key === 'homeworld'">Click To View</div>
             <div v-else>{{ userDetail }}</div>
           </td>
         </tr>

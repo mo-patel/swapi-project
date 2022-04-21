@@ -1,7 +1,5 @@
 import { PlanetDetails, UserDetails } from "@/types/dataTypes";
 import { createStore } from "vuex";
-import data from "../../data/sampleData.json";
-import planetData from "../../data/samplePlanetData.json";
 import dayjs from "dayjs";
 export interface State {
   allUserDetails: UserDetails[];
@@ -52,9 +50,6 @@ export default createStore<State>({
       state.filteredUsers = filtered;
       state.searchText = searchText;
     },
-    setFilter(state: State, flag: string) {
-      state.filterSet = flag;
-    },
     setPlanetDetails(state: State, planetData: PlanetDetails): void {
       state.planetDetails.push(planetData);
     },
@@ -85,33 +80,50 @@ export default createStore<State>({
         "edited",
         "homeworld",
       ];
-      //add fetch here
-      const reducedData = data.results.map((item) =>
-        fields.reduce((acc: Record<string, string>, key) => {
-          let itemToAdd = item[key as keyof UserDetails];
-          if (key === "created" || key === "edited") {
-            itemToAdd = dayjs(itemToAdd).format("DD/MM/YYYY");
-          }
-          acc[key] = itemToAdd;
-          return acc;
-        }, {})
-      );
-      commit("setUserDetails", reducedData);
+      try {
+        const userDataRes = await fetch(
+          process.env.VUE_APP_API_BASE + "people"
+        );
+        const userData = await userDataRes.json();
+
+        const reducedData = userData.results.map((item: UserDetails) =>
+          fields.reduce((acc: Record<string, string>, key) => {
+            let itemToAdd = item[key as keyof UserDetails];
+            if (key === "created" || key === "edited") {
+              itemToAdd = dayjs(itemToAdd).format("DD/MM/YYYY");
+            }
+            acc[key] = itemToAdd;
+            return acc;
+          }, {})
+        );
+        commit("setUserDetails", reducedData);
+      } catch (e) {
+        alert("An error occurred retrieving the data. Check the console");
+        console.log(e);
+      }
     },
     async setPlanetDetails({ commit }, payload) {
-      //fetch goes here
       const cachedData = this.getters.getPlanetData(payload.homeUrl);
       if (cachedData) {
         return commit("setPlanetDetails", cachedData);
       }
-      const pData: PlanetDetails = {
-        name: planetData.name,
-        diameter: planetData.diameter,
-        climate: planetData.climate,
-        population: planetData.population,
-        url: planetData.url,
-      };
-      commit("setPlanetDetails", pData);
+
+      try {
+        const planetDataRes = await fetch(payload.homeUrl);
+        const planetData = await planetDataRes.json();
+
+        const pData: PlanetDetails = {
+          name: planetData.name,
+          diameter: planetData.diameter,
+          climate: planetData.climate,
+          population: planetData.population,
+          url: planetData.url,
+        };
+        commit("setPlanetDetails", pData);
+      } catch (e) {
+        alert("An error occurred retrieving the data. Check the console");
+        console.log(e);
+      }
     },
   },
   modules: {},

@@ -1,4 +1,5 @@
 <template>
+  <h1>SWAPI test</h1>
   <PopupComponent
     v-if="modalContent"
     :content="modalContent"
