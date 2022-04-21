@@ -1,8 +1,12 @@
 <template>
-  <PopupComponent v-if="!true" />
-  <div @click="$store.getUserData" id="mainContent">
+  <PopupComponent
+    v-if="modalContent"
+    :content="modalContent"
+    @close="clearModal"
+  />
+  <div id="mainContent">
     <SearchComponent />
-    <DetailsComponent />
+    <DetailsComponent @setModalContent="setModalContent" />
   </div>
 </template>
 
@@ -11,10 +15,32 @@ import { defineComponent } from "vue";
 import DetailsComponent from "./components/DetailsComponent.vue";
 import SearchComponent from "./components/SearchComponent.vue";
 import PopupComponent from "./components/PopupComponent.vue";
+import { UserDetails } from "./types/dataTypes";
+
+interface AppLocalState {
+  modalContent: UserDetails | null;
+}
 
 export default defineComponent({
   name: "App",
   components: { DetailsComponent, SearchComponent, PopupComponent },
+  data(): AppLocalState {
+    return {
+      modalContent: null,
+    };
+  },
+  methods: {
+    setModalContent(data: UserDetails) {
+      this.modalContent = data;
+      const { dispatch } = this.$store;
+      dispatch("setPlanetDetails", {
+        homeUrl: this.modalContent.homeworld,
+      });
+    },
+    clearModal() {
+      this.modalContent = null;
+    },
+  },
   mounted() {
     const { dispatch } = this.$store;
     dispatch("setUserDetails");

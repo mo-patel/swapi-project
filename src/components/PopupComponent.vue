@@ -1,16 +1,17 @@
 <template>
-  <div class="popupParent">
-    <div class="popupOverlay"></div>
+  <div v-if="content" class="popupParent">
+    <div class="popupOverlay" @click="close"></div>
     <div class="popupContent">
-      <h2>Planet Details</h2>
+      <h1>Planet Details</h1>
       <table>
         <tbody>
-          <tr>
-            <th>Heading</th>
-            <td>table data</td>
+          <tr v-for="(modData, title) in getPlanets" :key="modData.name">
+            <th>{{ title }}</th>
+            <td>{{ modData }}</td>
           </tr>
         </tbody>
       </table>
+      <div class="closeBtn" @click="close">Close</div>
     </div>
   </div>
 </template>
@@ -18,7 +19,17 @@
 <script>
 export default {
   name: "PopupComponent",
-  props: {},
+  props: ["content"],
+  methods: {
+    close() {
+      this.$emit("close");
+    },
+  },
+  computed: {
+    getPlanets() {
+      return this.$store.getters.getPlanetData(this.content.homeworld);
+    },
+  },
 };
 </script>
 
@@ -49,6 +60,10 @@ export default {
   border-radius: 15px;
   background-color: #88869d;
   padding: 3%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .popupContent table {
@@ -56,5 +71,31 @@ export default {
   table-layout: fixed;
   border: 2px solid black;
   border-collapse: collapse;
+  z-index: 4;
+}
+
+h1 {
+  text-align: center;
+}
+
+th {
+  text-transform: capitalize;
+}
+
+table,
+th,
+td {
+  width: 100%;
+  table-layout: fixed;
+  border: 2px solid black;
+  border-collapse: collapse;
+}
+
+.closeBtn {
+  width: 100%;
+  background-color: rgb(38, 55, 179);
+  font-size: 1.5em;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>

@@ -1,12 +1,14 @@
-import { UserDetails } from "@/types/dataTypes";
+import { PlanetDetails, UserDetails } from "@/types/dataTypes";
 import { createStore } from "vuex";
 import data from "../../data/sampleData.json";
+import planetData from "../../data/samplePlanetData.json";
 import dayjs from "dayjs";
 export interface State {
   allUserDetails: UserDetails[];
   filteredUsers: UserDetails[];
   searchText: string;
   filterSet: string | null;
+  planetDetails: PlanetDetails[];
 }
 
 export default createStore<State>({
@@ -15,6 +17,7 @@ export default createStore<State>({
     filteredUsers: [],
     searchText: "",
     filterSet: null,
+    planetDetails: [],
   },
   getters: {
     userDetails(state: State): UserDetails[] | string {
@@ -29,6 +32,14 @@ export default createStore<State>({
     getFilteredUsers(state: State): UserDetails[] {
       return state.filteredUsers;
     },
+    getPlanetData:
+      (state: State) =>
+      (homeUrl: string): PlanetDetails | null => {
+        const checkState = state.planetDetails.find((item) => {
+          return homeUrl === item.url;
+        });
+        return checkState ?? null;
+      },
   },
   mutations: {
     setUserDetails(state: State, detailsArray: UserDetails[]): void {
@@ -43,6 +54,9 @@ export default createStore<State>({
     },
     setFilter(state: State, flag: string) {
       state.filterSet = flag;
+    },
+    setPlanetDetails(state: State, planetData: PlanetDetails): void {
+      state.planetDetails.push(planetData);
     },
     sortUsers(state: State, field: string): void {
       const numberFields: string[] = ["height", "mass"];
@@ -83,6 +97,21 @@ export default createStore<State>({
         }, {})
       );
       commit("setUserDetails", reducedData);
+    },
+    async setPlanetDetails({ commit }, payload) {
+      //fetch goes here
+      const cachedData = this.getters.getPlanetData(payload.homeUrl);
+      if (cachedData) {
+        return commit("setPlanetDetails", cachedData);
+      }
+      const pData: PlanetDetails = {
+        name: planetData.name,
+        diameter: planetData.diameter,
+        climate: planetData.climate,
+        population: planetData.population,
+        url: planetData.url,
+      };
+      commit("setPlanetDetails", pData);
     },
   },
   modules: {},

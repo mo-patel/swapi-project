@@ -16,9 +16,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in userDetails" :key="user">
-          <td v-for="userDetail in user" :key="userDetail">
-            {{ userDetail }}
+        <tr
+          v-for="user in userDetails"
+          :key="user"
+          @click="setModalDetails(user)"
+        >
+          <td v-for="(userDetail, key) in user" :key="userDetail">
+            <div v-if="key === 'homeworld'">Click for more...</div>
+            <div v-else>{{ userDetail }}</div>
           </td>
         </tr>
       </tbody>
@@ -32,6 +37,9 @@ export default {
   methods: {
     sortUsers(field) {
       this.$store.commit("sortUsers", field);
+    },
+    setModalDetails(data) {
+      this.$emit("setModalContent", data);
     },
   },
   computed: {
@@ -59,7 +67,7 @@ td {
 
 th {
   text-transform: capitalize;
-  position: sticky;
+  /* position: sticky; */
   top: 0;
   background-color: #88869d;
 }

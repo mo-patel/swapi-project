@@ -19,4 +19,5 @@ export interface PlanetDetails {
   diameter: string;
   climate: string;
   population: string;
+  url: string;
 }
