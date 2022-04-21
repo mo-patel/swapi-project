@@ -72,6 +72,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 10%;
+  padding: 2% 4% 5% 4%;
 }
 </style>

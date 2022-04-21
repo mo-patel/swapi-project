@@ -37,7 +37,6 @@ export default {
 .popupParent {
   display: flex;
   justify-content: center;
-  align-items: center;
   height: 100%;
   position: fixed;
 }
@@ -89,6 +88,8 @@ td {
   table-layout: fixed;
   border: 2px solid black;
   border-collapse: collapse;
+  word-break: break-all;
+  padding: 2%;
 }
 
 .closeBtn {
