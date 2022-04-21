@@ -6,6 +6,7 @@ export interface State {
   allUserDetails: UserDetails[];
   filteredUsers: UserDetails[];
   searchText: string;
+  filterSet: string | null;
 }
 
 export default createStore<State>({
@@ -13,6 +14,7 @@ export default createStore<State>({
     allUserDetails: [],
     filteredUsers: [],
     searchText: "",
+    filterSet: null,
   },
   getters: {
     userDetails(state: State): UserDetails[] | string {
@@ -38,6 +40,25 @@ export default createStore<State>({
       );
       state.filteredUsers = filtered;
       state.searchText = searchText;
+    },
+    setFilter(state: State, flag: string) {
+      state.filterSet = flag;
+    },
+    sortUsers(state: State, field: string): void {
+      const numberFields: string[] = ["height", "mass"];
+      const filterUnchanged: boolean = state.filterSet === field;
+      state.filterSet = filterUnchanged ? null : field;
+      state.allUserDetails.sort((a, b) => {
+        let valA: number | string = a[field as keyof UserDetails];
+        let valB: number | string = b[field as keyof UserDetails];
+        const valTrue: number = filterUnchanged ? -1 : 1;
+        const valFalse: number = filterUnchanged ? 1 : -1;
+        if (numberFields.includes(field)) {
+          valA = parseInt(valA);
+          valB = parseInt(valB);
+        }
+        return valA > valB ? valTrue : valFalse;
+      });
     },
   },
   actions: {

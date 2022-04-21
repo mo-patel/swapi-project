@@ -6,7 +6,11 @@
     <table v-else>
       <thead>
         <tr>
-          <th v-for="user in Object.keys(userDetails[0])" :key="user[0]">
+          <th
+            @click="sortUsers(user)"
+            v-for="user in Object.keys(userDetails[0])"
+            :key="user[0]"
+          >
             {{ user }}
           </th>
         </tr>
@@ -25,6 +29,11 @@
 <script>
 export default {
   name: "DetailsComponent",
+  methods: {
+    sortUsers(field) {
+      this.$store.commit("sortUsers", field);
+    },
+  },
   computed: {
     userDetails() {
       return this.$store.getters.userDetails;
