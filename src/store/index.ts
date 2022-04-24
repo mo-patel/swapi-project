@@ -44,6 +44,10 @@ export default createStore<State>({
       state.allUserDetails = detailsArray;
     },
     setSearch(state: State, searchText: string): void {
+      if (searchText.length < 1) {
+        state.filteredUsers = [];
+        return;
+      }
       const filtered: UserDetails[] = state.allUserDetails.filter((item) =>
         item.name.toLowerCase().includes(searchText)
       );
@@ -56,8 +60,9 @@ export default createStore<State>({
     sortUsers(state: State, field: string): void {
       const numberFields: string[] = ["height", "mass"];
       const filterUnchanged: boolean = state.filterSet === field;
+      const filterApplied: boolean = state.filteredUsers.length > 0;
       state.filterSet = filterUnchanged ? null : field;
-      state.allUserDetails.sort((a, b) => {
+      state[filterApplied ? "filteredUsers" : "allUserDetails"].sort((a, b) => {
         let valA: number | string = a[field as keyof UserDetails];
         let valB: number | string = b[field as keyof UserDetails];
         const valTrue: number = filterUnchanged ? -1 : 1;
