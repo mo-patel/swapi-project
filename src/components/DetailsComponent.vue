@@ -1,5 +1,5 @@
 <template>
-  <div class="parent" v-if="$store.state.allUserDetails.length > 0">
+  <div class="parent" v-if="dataLoaded">
     <div class="noRows" v-if="showNoRows">
       No items for your selected search
     </div>
@@ -8,7 +8,7 @@
         <tr>
           <th
             @click="sortUsers(user)"
-            v-for="user in Object.keys(userDetails[0])"
+            v-for="user in Object.keys(userDetails[0] || {})"
             :key="user[0]"
           >
             {{ user }}
@@ -34,6 +34,7 @@
 <script>
 export default {
   name: "DetailsComponent",
+  props: ["dataLoaded"],
   methods: {
     sortUsers(field) {
       this.$store.commit("sortUsers", field);
@@ -51,7 +52,6 @@ export default {
       return getSearchText.length > 0 && getFilteredUsers.length < 1;
     },
   },
-  props: {},
 };
 </script>
 

@@ -7,7 +7,10 @@
   />
   <div id="mainContent">
     <SearchComponent />
-    <DetailsComponent @setModalContent="setModalContent" />
+    <DetailsComponent
+      :dataLoaded="dataLoaded"
+      @setModalContent="setModalContent"
+    />
   </div>
 </template>
 
@@ -20,6 +23,7 @@ import { UserDetails } from "./types/dataTypes";
 
 interface AppLocalState {
   modalContent: UserDetails | null;
+  dataLoaded: boolean;
 }
 
 export default defineComponent({
@@ -28,6 +32,7 @@ export default defineComponent({
   data(): AppLocalState {
     return {
       modalContent: null,
+      dataLoaded: false,
     };
   },
   methods: {
@@ -45,6 +50,7 @@ export default defineComponent({
   mounted() {
     const { dispatch } = this.$store;
     dispatch("setUserDetails");
+    this.dataLoaded = true;
   },
 });
 </script>

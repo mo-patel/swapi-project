@@ -1,13 +1,39 @@
+import SearchComponent from "@/components/SearchComponent.vue";
+import { createStore, Store } from "vuex";
+import { mount, VueWrapper } from "@vue/test-utils";
+import { Plugin } from "vue";
 describe("SearchComponent.vue", () => {
-  let wrapper;
-
-  it("Search for Darth Vader returns result", () => {
-    //Run search function for sample data and return result
-    fail("Test unfinished");
+  const mockedFunc = jest.fn();
+  let store: Plugin | [Plugin, ...unknown[]] | Store<unknown>;
+  beforeEach(() => {
+    store = createStore({
+      state() {
+        return {
+          searchText: "t",
+        };
+      },
+      mutations: {
+        setSearch: mockedFunc,
+      },
+    });
+  });
+  it("Input renders", () => {
+    const wrapper: VueWrapper = mount(SearchComponent, {
+      global: {
+        plugins: [store],
+      },
+    });
+    expect(wrapper.find("input").exists()).toBe(true);
   });
 
-  it("Clear search data", () => {
-    //test function to clear inputted data and views from search
-    fail("Test unfinished");
+  it("Search fires mutation", async () => {
+    const wrapper: VueWrapper = mount(SearchComponent, {
+      global: {
+        plugins: [store],
+      },
+    });
+    const inputEl = wrapper.find("input");
+    await inputEl.trigger("keyup");
+    expect(mockedFunc).toBeCalled();
   });
 });

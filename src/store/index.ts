@@ -102,7 +102,7 @@ export default createStore<State>({
         console.log(e);
       }
     },
-    async setPlanetDetails({ commit }, payload) {
+    async setPlanetDetails({ commit }, payload): Promise<void> {
       const cachedData = this.getters.getPlanetData(payload.homeUrl);
       if (cachedData) {
         return commit("setPlanetDetails", cachedData);
